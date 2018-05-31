@@ -1,2 +1,2 @@
-# rad-shell-plugin
-My personal rad-shell plugin.
+# rad-plugins
+My personal rad-shell plugins.
