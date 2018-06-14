@@ -185,3 +185,51 @@ function gcb() {
     invocation+="${all_sorted[$selection]}"
     "${invocation[@]}"
 }
+
+# Clean up local branches
+function trimbranches() {
+    local branches_string="$(git for-each-ref --format='%(refname:short)' refs/heads/)"
+    if [ -z "$branches_string" ]; then
+        echo "No branches?"
+        return 1
+    fi
+    local branches=()
+    while read -r line; do branches+=("$line"); done <<<"$branches_string"
+
+    containsElement () {
+        local e match="$1"
+        shift
+        for e; do [[ "$match" =~ "$e" ]] && return 1; done
+        return 0
+    }
+
+    _ask_delete_branch() {
+        while [ 1 ]; do
+            printf "Delete branch '$1'? (y/n): "
+            read input
+            case "$input" in
+                y)
+                    echo "Deleting branch: '$1'"
+                    # git branch -D "$1"
+                    ;;
+                n)
+                    echo "Not deleting branch: '$1'"
+                    return
+                    ;;
+                *)
+                    echo "Enter 'y' or 'n'."
+                    ;;
+            esac
+        done
+    }
+
+    echo "Branches: $branches"
+
+    for branch in "${branches[@]}"; do
+        containsElement "$branch" "${SPECIAL_BRANCHES[@]}"
+        local special="$?"
+        if [ $special -eq 0 ]; then
+            _ask_delete_branch "$branch"
+        fi
+    done
+}
