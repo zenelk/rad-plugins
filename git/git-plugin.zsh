@@ -210,6 +210,7 @@ function trimbranches() {
                 y)
                     echo "Deleting branch: '$1'"
                     git branch -D "$1"
+                    return
                     ;;
                 n)
                     echo "Not deleting branch: '$1'"
