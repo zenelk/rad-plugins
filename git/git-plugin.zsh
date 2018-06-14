@@ -187,6 +187,11 @@ function gcb() {
 
 # Clean up local branches
 function trimbranches() {
+    local safe_branch='master'
+    echo "First getting to a safe branch, using '${safe_branch}'."
+    local starting_branch="$(git rev-parse --abbrev-ref HEAD)"
+    git checkout master
+
     local branches_string="$(git for-each-ref --format='%(refname:short)' refs/heads/)"
     if [ -z "$branches_string" ]; then
         echo "No branches?"
@@ -210,11 +215,11 @@ function trimbranches() {
                 y)
                     echo "Deleting branch: '$1'"
                     git branch -D "$1"
-                    return
+                    return 1
                     ;;
                 n)
                     echo "Not deleting branch: '$1'"
-                    return
+                    return 0
                     ;;
                 *)
                     echo "Enter 'y' or 'n'."
@@ -223,13 +228,26 @@ function trimbranches() {
         done
     }
 
-    echo "Branches: $branches"
-
+    local deleted_starting_branch=false
     for branch in "${branches[@]}"; do
         containsElement "$branch" "${SPECIAL_BRANCHES[@]}"
         local special="$?"
         if [ $special -eq 0 ]; then
             _ask_delete_branch "$branch"
+            local deleted_branch="$?"
+            if [ $deleted_branch -eq 1 ]; then
+                if [ $branch = $starting_branch ]; then
+                    echo "Note: You deleted your starting branch! You will be left on the safe branch (${safe_branch})."
+                    deleted_starting_branch=true
+                fi
+            fi
+        else
+            echo "Ignoring special branch: ${branch}"
         fi
     done
+
+    if [ $deleted_starting_branch != true ]; then
+        echo "Returning to the starting branch: '${starting_branch}'"
+        git checkout "${starting_branch}"
+    fi
 }
