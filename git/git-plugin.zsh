@@ -139,11 +139,14 @@ function gcb() {
     local special_branches_sorted=()
     while read -r line; do special_branches_sorted+=("$line"); done <<<"$sorted_special_branches_string"
 
-    local sorted_other_branches_string="$(echo ${other_branches[@]} | tr ' ' '\n' | sort -r)"
-    local other_branches_sorted=()
-    while read -r line; do other_branches_sorted+=("$line"); done <<<"$sorted_other_branches_string"
-
-    local all_sorted=("${special_branches_sorted[@]}" "${other_branches_sorted[@]}")
+    if [ ${#other_branches[@]} -ne 0 ]; then
+        local sorted_other_branches_string="$(echo ${other_branches[@]} | tr ' ' '\n' | sort -r)"
+        local other_branches_sorted=()
+        while read -r line; do other_branches_sorted+=("$line"); done <<<"$sorted_other_branches_string"
+        local all_sorted=("${special_branches_sorted[@]}" "${other_branches_sorted[@]}")
+    else
+        local all_sorted=("${special_branches_sorted[@]}")
+    fi
 
     local branch_count="${#all_sorted[@]}"
 
