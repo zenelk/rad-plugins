@@ -209,7 +209,7 @@ function trimbranches() {
             case "$input" in
                 y)
                     echo "Deleting branch: '$1'"
-                    # git branch -D "$1"
+                    git branch -D "$1"
                     ;;
                 n)
                     echo "Not deleting branch: '$1'"
