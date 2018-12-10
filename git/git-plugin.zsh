@@ -21,6 +21,8 @@ git config --global core.fscache true
 git config --global gc.auto 256
 
 function sublconflicts() {
+    IFS='
+'
     for file in $(git ls-files -u | cut -f2 | uniq); do
         subl "$file"
     done
