@@ -1,4 +1,4 @@
-SPECIAL_BRANCHES=("develop" "master" "RC-*")
+SPECIAL_BRANCHES=("develop" "master" "RC-*" "release/*")
 
 alias ga='git add -A'
 alias gf='git fetch --all --prune'
