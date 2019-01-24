@@ -48,24 +48,6 @@ function grc() {
     git push -f
 }
 
-function gitnuke() {
-    current_dir=$(pwd)
-    git_root=$(git rev-parse --show-toplevel)
-    changed_directories=false
-    if [[ $current_dir != $git_root ]]; then
-        changed_directories=true
-        pushd "$git_root"
-    fi
-    git submodule foreach --recursive git clean -fd
-    git submodule foreach --recursive git checkout -f --
-    git submodule update
-    git clean -fd
-    git checkout -f --
-    if [[ $changed_directories = true ]]; then
-        popd
-    fi
-}
-
 function glb() {
     git branch -vv | cut -c 3- | awk '$3 !~/\[/ { print $1 }'
 }
