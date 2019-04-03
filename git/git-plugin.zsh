@@ -20,6 +20,15 @@ git config --global core.preloadindex true
 git config --global core.fscache true
 git config --global gc.auto 256
 
+function in_git_repo() {
+    result=$(([ -d .git ] && echo .git) || git rev-parse --git-dir > /dev/null 2>&1)
+    if [ -z "$result" ]; then
+        echo 1
+        return
+    fi
+    echo 0
+}
+
 function sublconflicts() {
     IFS='
 '
