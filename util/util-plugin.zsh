@@ -9,3 +9,13 @@ function cdup {
 		cd ..
 	done
 }
+
+function zshaddhistory() {
+  emulate -L zsh
+  if ! [[ "$1" =~ "(^ |^wgc)" ]] ; then
+      print -sr -- "${1%%$'\n'}"
+      fc -p
+  else
+      return 1
+  fi
+}
