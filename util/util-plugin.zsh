@@ -12,7 +12,12 @@ function cdup {
 
 function zshaddhistory() {
   emulate -L zsh
-  if ! [[ "$1" =~ "(^ |^wgc)" ]] ; then
+
+  # Ignore failed commands
+  whence ${${(z)1}[1]} >| /dev/null || return 1 
+
+  # Ignore commands that match regex
+  if ! [[ "$1" =~ "(^ |^wgc)" ]]; then
       print -sr -- "${1%%$'\n'}"
       fc -p
   else
