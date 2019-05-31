@@ -21,7 +21,7 @@ git config --global core.fscache true
 git config --global gc.auto 256
 
 function in_git_repo() {
-    result=$(([ -d .git ] && echo .git) || git rev-parse --git-dir > /dev/null 2>&1)
+    result=$(([ -d .git ] && echo .git) || git rev-parse --git-dir 2>/dev/null)
     if [ -z "$result" ]; then
         echo 1
         return
