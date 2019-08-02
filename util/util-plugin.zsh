@@ -17,7 +17,7 @@ function zshaddhistory() {
   whence ${${(z)1}[1]} >| /dev/null || return 1 
 
   # Ignore commands that match regex
-  if ! [[ "$1" =~ "(^ |^wgc)" ]]; then
+  if ! [[ "$1" =~ (^ |^wgc|^gc -m) ]]; then
       print -sr -- "${1%%$'\n'}"
       fc -p
   else
