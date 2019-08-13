@@ -48,7 +48,6 @@ function _nuke_git() {
 }
 
 function _nuke_carthage() {
-    set -x
     local clean_all=false
     # In zsh, you have to not quote this or else you break the numeric parsing.
     while (( $# )); do
