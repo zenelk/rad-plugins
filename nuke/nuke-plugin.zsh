@@ -9,6 +9,10 @@ function nuke() {
         xcode)
 			_nuke_xcode
             ;;
+        carthage)
+            shift 1
+            _nuke_carthage "$@"
+            ;;
         *)
 			echo "Invalid target: $1"
 			return 1
@@ -41,4 +45,28 @@ function _nuke_git() {
     if [[ $changed_directories = true ]]; then
         popd
     fi
+}
+
+function _nuke_carthage() {
+    set -x
+    local clean_all=false
+    # In zsh, you have to not quote this or else you break the numeric parsing.
+    while (( $# )); do
+        case "${1}" in
+            -a|--all)
+                clean_all=true
+                shift 1
+                ;;
+            *)
+                echo "Unrecognized argument: '${1}'!"
+                exit 2
+                ;;
+        esac
+    done
+
+    if [ "${clean_all}" = true ]; then
+        rm -rf ~/Library/Caches/org.carthage.CarthageKit
+        rm -rf ~/Library/Caches/Rome
+    fi
+    find . -iname "Carthage" | head -n 1 | xargs rm -rf
 }
