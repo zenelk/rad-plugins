@@ -1,4 +1,4 @@
-export IGNORE_REGEX="(^ |^wgc|^gc -m)"
+export IGNORE_REGEX="^ |^wgc|^gc -m"
 
 alias myip="ifconfig en0 | grep inet | grep -v inet6 | awk '{printf \"%s\", \$2}'"
 
@@ -19,7 +19,7 @@ function zshaddhistory() {
   whence ${${(z)1}[1]} >| /dev/null || return 1 
 
   # Ignore commands that match regex
-  if ! [[ "$1" =~ $IGNORE_REGEX ]]; then
+  if ! [[ "$1" =~ ($IGNORE_REGEX) ]]; then
       print -sr -- "${1%%$'\n'}"
       fc -p
   else
