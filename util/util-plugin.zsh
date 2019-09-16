@@ -1,4 +1,4 @@
-export IGNORE_REGEX="^ |^wgc|^gc -m"
+export IGNORE_REGEX="^ |^gc -m"
 
 alias myip="ifconfig en0 | grep inet | grep -v inet6 | awk '{printf \"%s\", \$2}'"
 
