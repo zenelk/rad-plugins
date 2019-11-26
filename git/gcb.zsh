@@ -1,32 +1,12 @@
 # Check out branches easier
 function gcb() {
-    usage() { echo "Usage: $0 [-r] [-f]" 1>&2; return 1; }
-
     local selection=""
 
-    while getopts ":rf" o; do
-        case "${o}" in
-            r)
-                local remote=1
-                ;;
-            f)
-                local force=1
-                ;;
-            [0-9]*)
-
-                ;;
-            *)
-                return usage
-                ;;
-        esac
-    done
-    shift $((OPTIND-1))
-
-    if [ ! -z $1 ]; then
+    if [ -n "$1" ]; then
         case "$1" in
             ''|*[!0-9]*)
                 echo "Quick checkout failed: Not a number!"
-                return usage
+                return 1
                 ;;
             *)
                 selection="$1"
@@ -36,19 +16,11 @@ function gcb() {
     fi
 
     local branches=()
-    if [ -z "${remote}" ]; then
-        local branches_string="$(git for-each-ref --format='%(refname:short)' refs/heads/)"
-        if [ -z "$branches_string" ]; then
-            return 2
-        fi
-        while read -r line; do branches+=("$line"); done <<<"$branches_string"
-    else
-        local branches_string="$(git ls-remote --heads origin | cut -f2 | sed -e "s/^refs\/heads\///")"
-        if [ -z "$branches_string" ]; then
-            return 2
-        fi
-        while read -r line; do branches+=("$line"); done <<<"$branches_string"
-    fi
+    for branch in $(git for-each-ref --format='%(refname:short)' refs/heads/); do
+        branches+=("$branch")
+    done
+
+    # TODO: Left off with refactor here
 
     containsElement () {
         local e match="$1"

@@ -1,6 +1,3 @@
-# TODO: Need to take remotes into account.
-SPECIAL_BRANCHES=("develop" "master" "RC-*" "release/*")
-
 # Clean up local branches
 function trimbranches() {
     git fetch --all --prune
