@@ -187,23 +187,49 @@ function gcb() {
 
 # Clean up local branches
 function trimbranches() {
-    local safe_branch='master'
+    if [ "$1" = "-l" ]; then
+        local local_only=true
+    fi
+
+    local safe_branch='origin/master'
     echo "First getting to a safe branch, using '${safe_branch}'."
     local starting_branch="$(git rev-parse --abbrev-ref HEAD)"
-    git checkout master
+    git fetch --all --prune
+    git checkout "$safe_branch"
 
-    local branches_string="$(git for-each-ref --format='%(refname:short)' refs/heads/)"
+    if [ "$local_only" = true ]; then
+        local remote_branches_string="$(git for-each-ref --format='%(refname:lstrip=3)' refs/remotes/) $(git for-each-ref --format='%(refname:lstrip=2)' refs/remotes/)"
+        if [ -z "$remote_branches_string" ]; then
+            echo "No remote branches?"
+            return 1
+        fi
+        local remote_branches=()
+        while read -r line; do remote_branches+=("$line"); done <<<"$remote_branches_string"
+    fi
+
+    local branches_string="$(git for-each-ref --format='%(refname:lstrip=2)' refs/heads/)"
     if [ -z "$branches_string" ]; then
         echo "No branches?"
         return 1
     fi
     local branches=()
-    while read -r line; do branches+=("$line"); done <<<"$branches_string"
+    while read -r line; do
+        local should_skip=false
+        for remote_branch in "${remote_branches[@]}"; do
+            if [ "$remote_branch" = "$line" ]; then
+                should_skip=true
+                break
+            fi
+        done
+        if [ "$should_skip" = false ]; then
+            branches+=("$line")
+        fi
+    done <<<"$branches_string"
 
-    containsElement () {
+    containsElement() {
         local e match="$1"
         shift
-        for e; do [[ "$match" =~ "$e" ]] && return 1; done
+        for e; do [[ "$match" =~ $e ]] && return 1; done
         return 0
     }
 
@@ -246,7 +272,7 @@ function trimbranches() {
         fi
     done
 
-    if [ $deleted_starting_branch != true ]; then
+    if [ "$deleted_starting_branch" != true ]; then
         echo "Returning to the starting branch: '${starting_branch}'"
         git checkout "${starting_branch}"
     fi
