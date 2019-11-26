@@ -187,17 +187,12 @@ function gcb() {
 
 # Clean up local branches
 function trimbranches() {
-    if [ "$1" = "-l" ]; then
-        local local_only=true
+    git fetch --all --prune
+    if [ "$1" = "-f" ]; then
+        local force=true
     fi
 
-    local safe_branch='origin/master'
-    echo "First getting to a safe branch, using '${safe_branch}'."
-    local starting_branch="$(git rev-parse --abbrev-ref HEAD)"
-    git fetch --all --prune
-    git checkout "$safe_branch"
-
-    if [ "$local_only" = true ]; then
+    if [ "$force" = false ]; then
         local remote_branches_string="$(git for-each-ref --format='%(refname:lstrip=3)' refs/remotes/) $(git for-each-ref --format='%(refname:lstrip=2)' refs/remotes/)"
         if [ -z "$remote_branches_string" ]; then
             echo "No remote branches?"
@@ -226,6 +221,11 @@ function trimbranches() {
         fi
     done <<<"$branches_string"
 
+    if [ "${#branches[@]}" -le 0 ]; then
+        echo "No matching branches were found with the given criteria."
+        return 0
+    fi
+
     containsElement() {
         local e match="$1"
         shift
@@ -253,6 +253,12 @@ function trimbranches() {
             esac
         done
     }
+
+
+    local safe_branch='origin/master'
+    echo "First getting to a safe branch, using '${safe_branch}'."
+    local starting_branch="$(git rev-parse --abbrev-ref HEAD)"
+    git checkout "$safe_branch"
 
     local deleted_starting_branch=false
     for branch in "${branches[@]}"; do
