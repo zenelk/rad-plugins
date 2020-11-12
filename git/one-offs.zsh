@@ -1,9 +1,10 @@
-function sublconflicts() {
-    IFS='
-'
-    for file in $(git ls-files -u | cut -f2 | uniq); do
-        subl "$file"
-    done
+function sublconflicts() {    
+    IFS=$'\n'
+    files=($(git ls-files -u \
+        | cut -f2 \
+        | uniq))
+    IFS=' '
+    subl -n "${files[@]}"
 }
 
 function gdb() {
