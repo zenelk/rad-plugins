@@ -45,6 +45,9 @@ function _histDel() {
 
   if [ "$resolved_index" = "last" ]; then
     resolved_index="$(_histLastIndex)"
+  else
+    echo "Deleting with context other than 'last' is temporarily removed until I fix the bug"
+    return 1
   fi
 
   while 
