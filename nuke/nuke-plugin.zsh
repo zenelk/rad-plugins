@@ -1,4 +1,4 @@
-export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^nuke"
+export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^nuke ?$"
 
 function nuke() {
     case "$1" in

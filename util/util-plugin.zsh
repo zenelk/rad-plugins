@@ -1,5 +1,5 @@
 # Add myip/cdup ignores for history
-export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^myip|^cdup"
+export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^myip ?$|^cdup ?$"
 
 alias myip="ifconfig en0 | grep inet | grep -v inet6 | awk '{printf \"%s\", \$2}'"
 

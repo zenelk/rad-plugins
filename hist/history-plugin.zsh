@@ -1,4 +1,4 @@
-export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^hist"
+export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^hist ?$"
 
 # Hook for tying into ZSH process for history adding
 function zshaddhistory() {

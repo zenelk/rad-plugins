@@ -1,5 +1,5 @@
 # Add gcb ignore for history
-export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^gcb"
+export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^gcb ?$"
 
 # Check out branches easier
 function gcb() {

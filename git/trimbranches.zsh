@@ -1,4 +1,4 @@
-export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^trimbranches"
+export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^trimbranches ?$"
 
 # Clean up local branches
 function trimbranches() {

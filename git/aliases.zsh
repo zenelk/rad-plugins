@@ -1,5 +1,7 @@
 # Add git alias ignores for history
-export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^ga|^gf|^gs|^gd|^gdc|^gp|^gl|^gpu|^gh|^gb|^gc|^ggg"
+export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}\
+|^ga ?$|^gf ?$|^gs ?$|^gd ?$|^gdc ?$|^gp ?$\
+|^gl ?$|^gpu ?$|^gh ?$|^gb ?$|^gc ?$|^ggg ?$"
 
 alias ga='git add -A'
 alias gf='git fetch --all --prune'
