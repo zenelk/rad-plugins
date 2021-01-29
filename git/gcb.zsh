@@ -1,3 +1,6 @@
+# Add gcb ignore for history
+export IGNORE_REGEX="${IGNORE_REGEX}|^gcb"
+
 # Check out branches easier
 function gcb() {
     local selection=""

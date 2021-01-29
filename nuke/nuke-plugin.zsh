@@ -1,3 +1,5 @@
+export IGNORE_REGEX="${IGNORE_REGEX}|^nuke"
+
 function nuke() {
     case "$1" in
         git)

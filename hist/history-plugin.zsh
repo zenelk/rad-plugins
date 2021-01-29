@@ -1,4 +1,4 @@
-export IGNORE_REGEX="^ |^gc -m|^wgc|hist "
+export IGNORE_REGEX="${IGNORE_REGEX}|^hist"
 
 # Hook for tying into ZSH process for history adding
 function zshaddhistory() {

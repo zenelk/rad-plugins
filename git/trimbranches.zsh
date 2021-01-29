@@ -1,3 +1,5 @@
+export IGNORE_REGEX="${IGNORE_REGEX}|^trimbranches"
+
 # Clean up local branches
 function trimbranches() {
     git fetch --all --prune

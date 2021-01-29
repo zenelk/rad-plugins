@@ -1,3 +1,6 @@
+# Add git alias ignores for history
+export IGNORE_REGEX="${IGNORE_REGEX}|^ga|^gf|^gs|^gd|^gdc|^gp|^gl|^gpu|^gh|^gb|^gc|^ggg"
+
 alias ga='git add -A'
 alias gf='git fetch --all --prune'
 alias gs='git status'

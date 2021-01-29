@@ -1,3 +1,5 @@
+export IGNORE_REGEX="${IGNORE_REGEX}|^sublconflicts|^gdb|^grc"
+
 function sublconflicts() {    
     IFS=$'\n'
     files=($(git ls-files -u \

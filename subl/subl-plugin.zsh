@@ -1,3 +1,6 @@
+# Add subl ignore for history
+export IGNORE_REGEX="${IGNORE_REGEX}|^subl"
+
 unamestr=$(uname)
 
 if [ $unamestr = "Darwin" ]; then
