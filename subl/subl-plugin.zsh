@@ -1,5 +1,5 @@
 # Add subl ignore for history
-export IGNORE_REGEX="${IGNORE_REGEX}|^subl"
+export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^subl"
 
 unamestr=$(uname)
 

@@ -1,4 +1,4 @@
-export IGNORE_REGEX="${IGNORE_REGEX}|^hist"
+export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^hist"
 
 # Hook for tying into ZSH process for history adding
 function zshaddhistory() {
@@ -8,7 +8,7 @@ function zshaddhistory() {
   whence ${${(z)1}[1]} >| /dev/null || return 1 
 
   # Ignore commands that match regex
-  if ! [[ "$1" =~ ($IGNORE_REGEX) ]]; then
+  if ! [[ "$1" =~ ($ZK_HIST_IGNORE_REGEX) ]]; then
       print -sr -- "${1%%$'\n'}"
       fc -p
   else

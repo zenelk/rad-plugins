@@ -1,4 +1,4 @@
-export IGNORE_REGEX="${IGNORE_REGEX}|^sublconflicts|^gdb|^grc"
+export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^sublconflicts|^gdb|^grc"
 
 function sublconflicts() {    
     IFS=$'\n'
