@@ -1,3 +1,4 @@
+function_redefine nuke
 function nuke() {
     case "$1" in
         git)
@@ -21,14 +22,17 @@ function nuke() {
 }
 
 # TODO: Would sure be nice to module load this somehow. Don't have time right now for that.
+function_redefine _nuke_docker
 function _nuke_docker() {
 	docker rm -fv $(docker ps -aq)
 }
 
+function_redefine _nuke_xcode
 function _nuke_xcode() {
 	killall Xcode; rm -rf ~/Library/Developer/Xcode/DerivedData
 }
 
+function_redefine _nuke_git
 function _nuke_git() {
     current_dir=$(pwd)
     git_root=$(git rev-parse --show-toplevel)
@@ -47,6 +51,7 @@ function _nuke_git() {
     fi
 }
 
+function_redefine _nuke_carthage
 function _nuke_carthage() {
     local clean_all=false
     # In zsh, you have to not quote this or else you break the numeric parsing.

@@ -10,8 +10,8 @@ env=~/.ssh/agent.env
 # Note: Don't bother checking SSH_AGENT_PID. It's not used
 #       by SSH itself, and it might even be incorrect
 #       (for example, when using agent-forwarding over SSH).
-
-agent_is_running() {
+function_redefine agent_is_running
+function agent_is_running() {
     if [ "$SSH_AUTH_SOCK" ]; then
         # ssh-add returns:
         #   0 = agent running, has keys
@@ -23,15 +23,18 @@ agent_is_running() {
     fi
 }
 
-agent_has_keys() {
+function_redefine agent_has_keys
+function agent_has_keys() {
     ssh-add -l >/dev/null 2>&1
 }
 
-agent_load_env() {
+function_redefine agent_load_env
+function agent_load_env() {
     . "$env" >/dev/null
 }
 
-agent_start() {
+function_redefine agent_start
+function agent_start() {
     (umask 077; ssh-agent >"$env")
     . "$env" >/dev/null
 }

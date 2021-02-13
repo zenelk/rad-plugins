@@ -1,4 +1,5 @@
 # Clean up local branches
+function_redefine trimbranches
 function trimbranches() {
     git fetch --all --prune
     if [ "$1" = "-f" ]; then

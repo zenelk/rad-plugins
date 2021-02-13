@@ -1,6 +1,7 @@
 hist --add-ignore "gcb"
 
 # Check out branches easier
+function_redefine gcb
 function gcb() {
     local selection=""
 

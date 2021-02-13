@@ -1,11 +1,17 @@
 export _ZK_HIST_IGNORES=()
 
 # Hook for tying into ZSH process for history adding
+function_redefine zshaddhistory
 function zshaddhistory() {
   emulate -L zsh
 
   # Ignore failed commands
   whence ${${(z)1}[1]} >| /dev/null || return 1
+
+  # Ignore commands that start with a single space
+  if [[ "$1" =~ "^ " ]]; then
+    return 1
+  fi
 
   # Ignore commands that are added to the ignores list
   local no_newline="${1%%$'\n'}"
@@ -18,10 +24,12 @@ function zshaddhistory() {
   fi
 }
 
+function_redefine _hist_is_command_ignored
 function _hist_is_command_ignored() {
   (($_ZK_HIST_IGNORES[(Ie)$1]))
 }
 
+function_redefine hist
 function hist() {
   local verb
   verb="$1"
@@ -43,11 +51,13 @@ function hist() {
   esac
 }
 
+function_redefine _histClear
 function _histClear() {
-  rm "$HISTFILE"
+  echo "" >| "$HISTFILE"
   $SHELL -l
 }
 
+function_redefine _histDel
 function _histDel() {
   local resolved_index="$1"
 
@@ -77,14 +87,17 @@ function _histDel() {
   _histPurgeCommand "$command_to_delete"
 }
 
+function_redefine _histAddIgnore
 function _histAddIgnore() {
   _ZK_HIST_IGNORES+=("$1")
 }
 
+function_redefine _histLastIndex
 function _histLastIndex() {
   [[ "$(history | tail -n 1)" =~ '^[[:space:]]+([[:digit:]]+)' ]] && echo "${match[1]}"
 }
 
+function_redefine _histCommandAtIndex
 function _histCommandAtIndex() {
   while read -r line; do
     if [[ "$line" =~ "^[[:space:]]+$1[[:space:]]+(.*)$" ]]; then
@@ -94,6 +107,7 @@ function _histCommandAtIndex() {
   done < <(history)
 }
 
+function_redefine _histPurgeCommand
 function _histPurgeCommand() {
   local sed_deletions
   sed_deletions=""

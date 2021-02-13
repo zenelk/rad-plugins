@@ -1,3 +1,4 @@
+function_redefine sublconflicts
 function sublconflicts() {
     IFS=$'\n'
     files=($(git ls-files -u \
@@ -7,6 +8,7 @@ function sublconflicts() {
     subl -n "${files[@]}"
 }
 
+function_redefine gdb
 function gdb() {
 	if [ -z "$1" ]; then
 		echo "Branch name is required!"
@@ -16,6 +18,7 @@ function gdb() {
     git push origin ":$1"
 }
 
+function_redefine grc
 function grc() {
     git add -A
     git commit --amend --no-edit

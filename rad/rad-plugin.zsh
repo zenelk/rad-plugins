@@ -1,4 +1,5 @@
-function rad {
+function_redefine rad
+function rad() {
     case "$1" in
         reload)
             shift
@@ -14,11 +15,11 @@ function rad {
     esac
 }
 
-function _rad_reload {
+function_redefine _rad_reload
+function _rad_reload() {
     # ZTODO: Probably should make these options better...
     if [ "$1" = '-d' ]; then
         echo "Reloading as debug!"
-        set -x
     fi
 
     if ! _rad_check_workspace; then
@@ -46,17 +47,17 @@ function _rad_reload {
 
         if [ -f "$plugin_path" ]; then
             source "$plugin_path"
+            if [ "$1" = '-d' ]; then
+                echo "Reloaded plugin '$plugin_path'"
+            fi
         elif [ "$1" = '-d' ]; then
             echo "Not reloading '$plugin_path', source not found in workspace..."
         fi
     done <"$rad_plugins_file"
-
-    if [ "$1" = '-d' ]; then
-        set +x
-    fi
 }
 
-function _rad_edit {
+function_redefine _rad_edit
+function _rad_edit() {
     if ! _rad_check_workspace; then
         return 1
     fi
@@ -64,7 +65,8 @@ function _rad_edit {
     subl "$ZK_RAD_PLUGINS_WORKSPACE"
 }
 
-function _rad_check_workspace {
+function_redefine _rad_check_workspace
+function _rad_check_workspace() {
     if [ ! -d "$ZK_RAD_PLUGINS_WORKSPACE" ]; then
         echo "Could not find rad-plugins workspace! Did you set ZK_RAD_PLUGINS_WORKSPACE?"
         return 1
@@ -72,14 +74,17 @@ function _rad_check_workspace {
     return 0
 }
 
-function _rad_is_comment_or_blank {
+function_redefine _rad_is_comment_or_blank
+function _rad_is_comment_or_blank() {
     [[ "$1" =~ '^#.*$|^\s?$' ]]
 }
 
-function _rad_parse_org {
+function_redefine _rad_parse_org
+function _rad_parse_org() {
     [[ "$1" =~ '^(.*)/.*$' ]] && echo "${match[1]#*:}"
 }
 
-function _rad_parse_plugin_name {
+function_redefine _rad_parse_plugin_name
+function _rad_parse_plugin_name() {
     [[ "$1" =~ '^.* (.*)$' ]] && echo "${match[1]}"
 }
