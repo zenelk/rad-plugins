@@ -31,6 +31,8 @@ function _hist_is_command_ignored() {
 
 function_redefine hist
 function hist() {
+  _write_history_to_histfile
+
   local verb
   verb="$1"
   shift
@@ -49,6 +51,8 @@ function hist() {
       echo "Unknown verb: '$verb'"
       return 1
   esac
+
+  _read_history_from_histfile
 }
 
 function_redefine _histClear
@@ -123,4 +127,14 @@ function _histPurgeCommand() {
   done < "$HISTFILE"
 
   sed -i '' "$sed_deletions" "$HISTFILE"
+}
+
+function_redefine _write_history_to_histfile
+function _write_history_to_histfile() {
+  fc -W
+}
+
+function_redefine _read_history_from_histfile
+function _read_history_from_histfile() {
+  fc -R
 }
