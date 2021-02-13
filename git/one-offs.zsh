@@ -1,6 +1,4 @@
-export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^sublconflicts ?$|^gdb ?$|^grc ?$"
-
-function sublconflicts() {    
+function sublconflicts() {
     IFS=$'\n'
     files=($(git ls-files -u \
         | cut -f2 \

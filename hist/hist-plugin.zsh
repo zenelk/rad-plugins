@@ -1,19 +1,25 @@
-export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^hist ?$"
+export _ZK_HIST_IGNORES=()
 
 # Hook for tying into ZSH process for history adding
 function zshaddhistory() {
   emulate -L zsh
 
   # Ignore failed commands
-  whence ${${(z)1}[1]} >| /dev/null || return 1 
+  whence ${${(z)1}[1]} >| /dev/null || return 1
 
-  # Ignore commands that match regex
-  if ! [[ "$1" =~ ($ZK_HIST_IGNORE_REGEX) ]]; then
-      print -sr -- "${1%%$'\n'}"
-      fc -p
+  # Ignore commands that are added to the ignores list
+  local no_newline="${1%%$'\n'}"
+  local command="${no_newline% *}"
+  if _hist_is_command_ignored "$command"; then
+    return 1
   else
-      return 1
+    print -sr -- "$no_newline"
+    fc -p
   fi
+}
+
+function _hist_is_command_ignored() {
+  (($_ZK_HIST_IGNORES[(Ie)$1]))
 }
 
 function hist() {
@@ -22,11 +28,14 @@ function hist() {
   shift
 
   case "$verb" in
-    clear)
+    --clear)
       _histClear
       ;;
-    del)
+    --del)
       _histDel "$@"
+      ;;
+    --add-ignore)
+      _histAddIgnore "$@"
       ;;
     *)
       echo "Unknown verb: '$verb'"
@@ -40,8 +49,7 @@ function _histClear() {
 }
 
 function _histDel() {
-  local resolved_index
-  resolved_index="$1"
+  local resolved_index="$1"
 
   if [ "$resolved_index" = "last" ]; then
     resolved_index="$(_histLastIndex)"
@@ -50,8 +58,8 @@ function _histDel() {
     return 1
   fi
 
-  while 
-    [ -z "$resolved_index" ] || 
+  while
+    [ -z "$resolved_index" ] ||
     [ -n "${resolved_index//[0-9]/}" ]
   do
     history
@@ -67,6 +75,10 @@ function _histDel() {
   command_to_delete="$(_histCommandAtIndex "$resolved_index")"
 
   _histPurgeCommand "$command_to_delete"
+}
+
+function _histAddIgnore() {
+  _ZK_HIST_IGNORES+=("$1")
 }
 
 function _histLastIndex() {

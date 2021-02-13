@@ -1,5 +1,4 @@
-# Add gcb ignore for history
-export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^gcb ?$"
+hist --add-ignore "gcb"
 
 # Check out branches easier
 function gcb() {
@@ -73,7 +72,7 @@ function gcb() {
                 ''|*[!0-9]*)
                     echo "Not a number! Try again..."
                     ;;
-                *) 
+                *)
                     if [ $input -lt 1 ] || [ $input -gt $branch_count ]; then
                         echo "Out of bounds! Try again..."
                     else

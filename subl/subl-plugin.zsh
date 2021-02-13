@@ -1,6 +1,3 @@
-# Add subl ignore for history
-export ZK_HIST_IGNORE_REGEX="${ZK_HIST_IGNORE_REGEX}|^subl ?$"
-
 unamestr=$(uname)
 
 if [ $unamestr = "Darwin" ]; then
