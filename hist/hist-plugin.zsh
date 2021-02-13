@@ -1,5 +1,8 @@
 export _ZK_HIST_IGNORES=()
 
+# Ignores all commands starting with a space
+setopt HIST_IGNORE_SPACE
+
 # Hook for tying into ZSH process for history adding
 function_redefine zshaddhistory
 function zshaddhistory() {
@@ -7,11 +10,6 @@ function zshaddhistory() {
 
   # Ignore failed commands
   whence ${${(z)1}[1]} >| /dev/null || return 1
-
-  # Ignore commands that start with a single space
-  if [[ "$1" =~ "^ " ]]; then
-    return 1
-  fi
 
   # Ignore commands that are added to the ignores list
   local no_newline="${1%%$'\n'}"
