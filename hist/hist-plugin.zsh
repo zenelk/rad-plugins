@@ -58,7 +58,6 @@ function hist() {
 function_redefine _histClear
 function _histClear() {
   echo "" >| "$HISTFILE"
-  $SHELL -l
 }
 
 function_redefine _histDel
