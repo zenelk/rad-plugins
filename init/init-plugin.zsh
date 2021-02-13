@@ -1,7 +1,7 @@
 # Allows for functions to be reloaded when used like so:
 # function_redefine foo
 # function foo() { ... }
-function_redefine() {
+function function_redefine() {
     while (( $# )); do
         if function_exists "$1"; then
             unfunction "$1"
@@ -11,6 +11,6 @@ function_redefine() {
     done
 }
 
-function_exists() {
+function function_exists() {
     declare -f "$1" > /dev/null
 }
