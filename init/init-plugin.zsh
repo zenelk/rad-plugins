@@ -12,6 +12,5 @@ function_redefine() {
 }
 
 function_exists() {
-    declare -f g > /dev/null
-    echo $?
+    declare -f "$1" > /dev/null
 }
