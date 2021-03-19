@@ -1,5 +1,3 @@
-hist --add-ignore "cdup"
-
 alias myip="ifconfig en0 | grep inet | grep -v inet6 | awk '{printf \"%s\", \$2}'"
 alias ls='ls -al'
 

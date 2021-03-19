@@ -1,5 +1,3 @@
-hist --add-ignore "gc"
-
 alias ga='git add -A'
 alias gf='git fetch --all --prune'
 alias gs='git status'
