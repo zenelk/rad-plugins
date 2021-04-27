@@ -11,19 +11,3 @@ function cdup() {
         cd ..
     done
 }
-
-# Hook for tying into ZSH process for history adding
-function zshaddhistory() {
-    emulate -L zsh
-
-    # Ignore failed commands
-    whence ${${(z)1}[1]} >| /dev/null || return 1
-
-    # Ignore commands that start with a single space
-    if [[ "$1" =~ "^ " ]]; then
-        return 1
-    fi
-
-    print -sr -- "$no_newline"
-    fc -p
-}
