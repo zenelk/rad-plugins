@@ -1,5 +1,5 @@
 if [[ -e ".ssh-init" ]]; then
-	soruce ".ssh-init"
+  soruce ".ssh-init"
 fi
 
 # Note: ~/.ssh/environment should not be used, as it
@@ -12,44 +12,44 @@ env=~/.ssh/agent.env
 #       (for example, when using agent-forwarding over SSH).
 function_redefine agent_is_running
 function agent_is_running() {
-    if [ "$SSH_AUTH_SOCK" ]; then
-        # ssh-add returns:
-        #   0 = agent running, has keys
-        #   1 = agent running, no keys
-        #   2 = agent not running
-        ssh-add -l >/dev/null 2>&1 || [ $? -eq 1 ]
-    else
-        false
-    fi
+  if [ "$SSH_AUTH_SOCK" ]; then
+    # ssh-add returns:
+    #   0 = agent running, has keys
+    #   1 = agent running, no keys
+    #   2 = agent not running
+    ssh-add -l >/dev/null 2>&1 || [ $? -eq 1 ]
+  else
+    false
+  fi
 }
 
 function_redefine agent_has_keys
 function agent_has_keys() {
-    ssh-add -l >/dev/null 2>&1
+  ssh-add -l >/dev/null 2>&1
 }
 
 function_redefine agent_load_env
 function agent_load_env() {
-    . "$env" >/dev/null
+  . "$env" >/dev/null
 }
 
 function_redefine agent_start
 function agent_start() {
-    (umask 077; ssh-agent >"$env")
-    . "$env" >/dev/null
+  (umask 077; ssh-agent >"$env")
+  . "$env" >/dev/null
 }
 
 if ! agent_is_running; then
-    agent_load_env
+  agent_load_env
 fi
 
 # if your keys are not stored in ~/.ssh/id_rsa or ~/.ssh/id_dsa, you'll need
 # to paste the proper path after ssh-add
 if ! agent_is_running; then
-    agent_start
-    ssh-add
+  agent_start
+  ssh-add
 elif ! agent_has_keys; then
-    ssh-add
+  ssh-add
 fi
 
 unset env
