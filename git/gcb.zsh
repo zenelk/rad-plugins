@@ -1,21 +1,6 @@
 # Check out branches easier
 function_redefine gcb
 function gcb() {
-    local selection=""
-
-    if [ -n "$1" ]; then
-        case "$1" in
-            ''|*[!0-9]*)
-                echo "Quick checkout failed: Not a number!"
-                return 1
-                ;;
-            *)
-                selection="$1"
-                ;;
-        esac
-        selection="$1"
-    fi
-
     local branches=()
     for branch in $(git for-each-ref --format='%(refname:short)' refs/heads/); do
         branches+=("$branch")
@@ -57,6 +42,7 @@ function gcb() {
 
     local branch_count="${#all_sorted[@]}"
 
+    local selection=""
     if [ -z "$selection" ]; then
         local i=1
         for branch in "${all_sorted[@]}"; do
