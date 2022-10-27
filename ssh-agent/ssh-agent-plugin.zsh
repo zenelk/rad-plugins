@@ -1,5 +1,5 @@
 if [[ -e ".ssh-init" ]]; then
-  soruce ".ssh-init"
+  source ".ssh-init"
 fi
 
 # Note: ~/.ssh/environment should not be used, as it
