@@ -20,8 +20,8 @@ function zshaddhistory() {
   # Ignore failed commands
   whence ${${(z)1}[1]} >| /dev/null || return 1
 
-  # Only remember commands that precede with a single space
-  if [[ ! "$1" =~ "^ " ]]; then
+  # Ignore commands that start with a single space
+  if [[ "$1" =~ "^ " ]]; then
     return 1
   fi
 
