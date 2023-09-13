@@ -14,6 +14,9 @@ function nuke() {
       shift 1
       _nuke_carthage "$@"
       ;;
+    fastlane)
+      _nuke_fastlane
+      ;;
     *)
       echo "Invalid target: $1"
       return 1
@@ -73,4 +76,9 @@ function _nuke_carthage() {
     rm -rf ~/Library/Caches/Rome
   fi
   find . -iname "Carthage" | head -n 1 | xargs rm -rf
+}
+
+function_redefine _nuke_fastlane
+function _nuke_fastlane() {
+  rm -rf fastlane/output
 }
