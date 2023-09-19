@@ -1,4 +1,5 @@
 alias ga='git add -A'
+alias gco='git checkout'
 alias gf='git fetch --all --prune'
 alias gs='git status'
 alias gd='git diff'
