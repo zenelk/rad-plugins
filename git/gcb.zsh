@@ -42,7 +42,7 @@ function gcb() {
 
   local branch_count="${#all_sorted[@]}"
 
-  local selection=""
+  local selection="${1}"
   if [ -z "$selection" ]; then
     local i=1
     for branch in "${all_sorted[@]}"; do
@@ -66,11 +66,9 @@ function gcb() {
           ;;
       esac
     done
-  else
-      if [ $selection -lt 1 ] || [ $selection -gt $branch_count ]; then
-        echo "Quick checkout failed: Branch index out of bounds!"
-        return 1
-      fi
+  elif [[ ! $selection =~ '^[0-9]+$' ]] || [ $selection -lt 1 ] || [ $selection -gt $branch_count ]; then
+    echo "Quick checkout failed: Branch index out of bounds!"
+    return 1
   fi
 
   local invocation=(git checkout)
