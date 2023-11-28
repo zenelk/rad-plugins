@@ -30,8 +30,8 @@ function zshaddhistory() {
   fc -p
 }
 
-function_redefine selectrepo
-function selectrepo() {
+function_redefine sr
+function sr() {
   function echoerr() {
     echo $@ >&2
   }
@@ -157,5 +157,3 @@ function selectrepo() {
 
   cd "${ZK_CODE_ROOT}/${selected_org}/${selected_repo}"
 }
-
-alias sr='selectrepo'
