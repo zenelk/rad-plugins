@@ -32,8 +32,66 @@ function zshaddhistory() {
 
 function_redefine sr
 function sr() {
+  local quick_select_none='none'
+  local quick_select_root='-'
+
   function echoerr() {
     echo $@ >&2
+  }
+
+  function isRootSet() {
+    if ! [ -z "${ZK_CODE_ROOT}" ]; then
+      return 0
+    fi
+    return 1
+  }
+
+  function isInteger() {
+    if [[ "${1}" =~ '^[0-9]+$' ]]; then
+      return 0
+    fi
+    return 1
+  }
+
+  function printUnsupportedArgumentError() {
+    echoerr "Unsupported argument '${1}' at position ${2}!"
+  }
+
+  function validateArguments() {
+    case $# in
+      0)
+        return 0
+        ;;
+      1)
+        if [ "${1}" != "${quick_select_root}" ] || ! isInteger "${1}"; then
+          printUnsupportedArgumentError "${1}" 1
+          return 1
+        fi
+        ;;
+      2)
+        if ! isInteger "${1}"; then
+          printUnsupportedArgumentError "${1}" 1
+          return 1
+        elif ! isInteger "${2}"; then
+          printUnsupportedArgumentError "${2}" 2
+          return 1
+        fi
+        return 0
+        ;;
+      *)
+        echoerr "Invalid number of arguments!"
+        # ZTODO: Make a usage function.
+        return 1
+        ;;
+    esac
+  }
+
+  function parseQuickSelectArgument() {
+    if [ -z "${1}" ]; then
+      echo "${quick_select_none}"
+    else
+      echo "${1}"
+    fi
   }
 
   function statOrgs() {
@@ -109,8 +167,6 @@ function sr() {
     echo "${array["${selection}"]}"
   }
 
-  local quick_select_none="none"
-
   function produceSelectionIndex() {
     local quick_select_index="${1}"
     local section_header="${2}"
@@ -135,21 +191,28 @@ function sr() {
     fi
   }
 
-  if [ -z "${ZK_CODE_ROOT}" ]; then
+  if ! isRootSet; then
     echoerr "ZK_CODE_ROOT is not defined!"
+    return 1
+  fi # ZTODO: This might be a good spot for the usage.
+  
+  if ! validateArguments "${@}"; then
+    echoerr "Failed to validate arguments!"
     return 1
   fi
 
-  local quick_select_org_index="${quick_select_none}"
-  local quick_select_repo_index="${quick_select_none}"
-  if [ "${1}" = "-" ]; then
+  if [ "${1}" = "${quick_select_root}" ]; then
     cd "${ZK_CODE_ROOT}"
     return 0
-  elif [[ "${1}" =~ '^[0-9]+,[0-9]+$' ]]; then
-    quick_select_org_index="$(echo "${1}" | cut -d ',' -f 1)"
-    quick_select_repo_index="$(echo "${1}" | cut -d ',' -f 2)"
-  elif [ ! -z "${1}" ]; then
-    echoerr "Unsupported argument: '${1}'"
+  fi
+
+  local quick_select_org_index="$(parseQuickSelectArgument "${1}")"
+  if [ -z "${quick_select_org_index}" ]; then
+    return 1
+  fi
+
+  local quick_select_repo_index="$(parseQuickSelectArgument "${2}")"
+  if [ -z "${quick_select_repo_index}" ]; then
     return 1
   fi
 
