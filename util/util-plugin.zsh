@@ -126,30 +126,34 @@ function sr() {
   fi
 
   local orgs=($(statOrgs))
+  local orgs_count="${#orgs[@]}"
   local selected_org
-  if [ -z "${quick_select_org_index}" ]; then
+  if [ "${orgs_count}" -eq 1 ]; then
+    selected_org="${orgs[1]}"
+  elif [ -z "${quick_select_org_index}" ]; then
     echoerr "-----Orgs-----"
     echoFormattedPromptArray "${orgs[@]}"
     selected_org="$(readSelectionInputFromArray "${orgs[@]}")"
   else
-    local count="${#orgs[@]}"
-    if [ "${quick_select_org_index}" -lt 1 ] || [ "${quick_select_org_index}" -gt "${count}" ]; then
-      echoerr "Quick select org index '${quick_select_org_index}' out of bounds '[1, ${count}]'!"
+    if [ "${quick_select_org_index}" -lt 1 ] || [ "${quick_select_org_index}" -gt "${orgs_count}" ]; then
+      echoerr "Quick select org index '${quick_select_org_index}' out of bounds '[1, ${orgs_count}]'!"
       return 1
     fi
     selected_org="${orgs["${quick_select_org_index}"]}"
   fi
 
   local repos=($(statRepos "${selected_org}"))
+  local repos_count="${#repos[@]}"
   local selected_repo
-  if [ -z "${quick_select_repo_index}" ]; then
+  if [ "${repos_count}" -eq 1 ]; then
+    selected_repo="${repos[1]}"
+  elif [ -z "${quick_select_repo_index}" ]; then
     echoerr -e "\n-----Repos-----"
     echoFormattedPromptArray "${repos[@]}"
     selected_repo="$(readSelectionInputFromArray "${repos[@]}")"
   else
-    local count="${#repos[@]}"
-    if [ "${quick_select_repo_index}" -lt 1 ] || [ "${quick_select_repo_index}" -gt "${count}" ]; then
-      echoerr "Quick select repo index '${quick_select_repo_index}' out of bounds '[1, ${count}]'!"
+    if [ "${quick_select_repo_index}" -lt 1 ] || [ "${quick_select_repo_index}" -gt "${repos_count}" ]; then
+      echoerr "Quick select repo index '${quick_select_repo_index}' out of bounds '[1, ${repos_count}]'!"
       return 1
     fi
     selected_repo="${repos["${quick_select_repo_index}"]}"
