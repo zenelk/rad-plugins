@@ -63,7 +63,7 @@ function sr() {
         return 0
         ;;
       1)
-        if [ "${1}" != "${quick_select_root}" ] || ! isInteger "${1}"; then
+        if [ "${1}" != "${quick_select_root}" ] && ! isInteger "${1}"; then
           printUnsupportedArgumentError "${1}" 1
           return 1
         fi
