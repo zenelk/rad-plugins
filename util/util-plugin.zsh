@@ -109,54 +109,62 @@ function sr() {
     echo "${array["${selection}"]}"
   }
 
+  local quick_select_none="none"
+
+  function produceSelectionIndex() {
+    local quick_select_index="${1}"
+    local section_header="${2}"
+    shift 2
+    local array=(${@})
+    local count="${#}"
+
+    if [ "${quick_select_index}" = "${quick_select_none}" ]; then
+      if [ "${count}" -eq 1 ]; then
+        echo "${array[1]}"
+        return 0
+      fi
+
+      echoerr -e "${section_header}"
+      echoFormattedPromptArray "${array[@]}"
+      echo "$(readSelectionInputFromArray "${array[@]}")"
+    elif [ "${quick_select_index}" -lt 1 ] || [ "${quick_select_index}" -gt "${count}" ]; then
+      echoerr "Quick select org index '${quick_select_index}' out of bounds '[1, ${count}]'!"
+      return 1
+    else
+      echo "${array["${quick_select_index}"]}"
+    fi
+  }
+
   if [ -z "${ZK_CODE_ROOT}" ]; then
     echoerr "ZK_CODE_ROOT is not defined!"
     return 1
   fi
 
+  local quick_select_org_index="${quick_select_none}"
+  local quick_select_repo_index="${quick_select_none}"
   if [ "${1}" = "-" ]; then
     cd "${ZK_CODE_ROOT}"
     return 0
   elif [[ "${1}" =~ '^[0-9]+,[0-9]+$' ]]; then
-    local quick_select_org_index="$(echo "${1}" | cut -d ',' -f 1)"
-    local quick_select_repo_index="$(echo "${1}" | cut -d ',' -f 2)"
+    quick_select_org_index="$(echo "${1}" | cut -d ',' -f 1)"
+    quick_select_repo_index="$(echo "${1}" | cut -d ',' -f 2)"
   elif [ ! -z "${1}" ]; then
     echoerr "Unsupported argument: '${1}'"
     return 1
   fi
 
   local orgs=($(statOrgs))
-  local orgs_count="${#orgs[@]}"
-  local selected_org
-  if [ "${orgs_count}" -eq 1 ]; then
-    selected_org="${orgs[1]}"
-  elif [ -z "${quick_select_org_index}" ]; then
-    echoerr "-----Orgs-----"
-    echoFormattedPromptArray "${orgs[@]}"
-    selected_org="$(readSelectionInputFromArray "${orgs[@]}")"
-  else
-    if [ "${quick_select_org_index}" -lt 1 ] || [ "${quick_select_org_index}" -gt "${orgs_count}" ]; then
-      echoerr "Quick select org index '${quick_select_org_index}' out of bounds '[1, ${orgs_count}]'!"
-      return 1
-    fi
-    selected_org="${orgs["${quick_select_org_index}"]}"
+  local orgs_section_header="-----Orgs-----"
+  local selected_org="$(produceSelectionIndex "${quick_select_org_index}" "${orgs_section_header}" "${orgs[@]}")"
+  if [ -z "${selected_org}" ]; then
+    return 1
   fi
 
   local repos=($(statRepos "${selected_org}"))
-  local repos_count="${#repos[@]}"
-  local selected_repo
-  if [ "${repos_count}" -eq 1 ]; then
-    selected_repo="${repos[1]}"
-  elif [ -z "${quick_select_repo_index}" ]; then
-    echoerr -e "\n-----Repos-----"
-    echoFormattedPromptArray "${repos[@]}"
-    selected_repo="$(readSelectionInputFromArray "${repos[@]}")"
-  else
-    if [ "${quick_select_repo_index}" -lt 1 ] || [ "${quick_select_repo_index}" -gt "${repos_count}" ]; then
-      echoerr "Quick select repo index '${quick_select_repo_index}' out of bounds '[1, ${repos_count}]'!"
-      return 1
-    fi
-    selected_repo="${repos["${quick_select_repo_index}"]}"
+  local repos_section_header="\n-----Repos-----"
+  local selected_repo="$(produceSelectionIndex "${quick_select_repo_index}" "${repos_section_header}" "${repos[@]}")"
+  if [ -z "${selected_repo}" ]; then
+    return 1
   fi
 
   cd "${ZK_CODE_ROOT}/${selected_org}/${selected_repo}"
