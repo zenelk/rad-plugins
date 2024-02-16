@@ -239,13 +239,13 @@ function repeat_until_fail() {
   CYAN='\033[0;36m'
   NO_COLOR='\033[0m'
 
-  iteration=1
+  iteration=0
   last_code=0
   while [ $last_code -eq 0 ]; do
+    iteration=$((iteration+1))
     echo -e "${CYAN}--- Starting itaration $iteration ---${NO_COLOR}"
     eval "$1"
     last_code=$?
-    iteration=$((iteration+1))
   done
 
   echo -e "${RED}--- Last command failed with code ${last_code} on iteration ${iteration} ---${NO_COLOR}"
