@@ -1,6 +1,7 @@
 alias myip="ifconfig en0 | grep inet | grep -v inet6 | awk '{printf \"%s\", \$2}'"
 alias ls='ls -al'
 alias kx='killall Xcode'
+alias bef='bundle exec fastlane'
 
 function_redefine cdup
 function cdup() {
