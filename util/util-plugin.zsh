@@ -251,3 +251,50 @@ function repeat_until_fail() {
 
   echo -e "${RED}--- Last command failed with code ${last_code} on iteration ${iteration} ---${NO_COLOR}"
 }
+
+function_redefine fz
+function fz() {
+  function find_git_repo_root() {
+    local current_dir="$(pwd)"
+    local git_dir="$(git rev-parse --show-toplevel 2>/dev/null)"
+
+    if [ -n "${git_dir}" ]; then
+      echo "${git_dir}"
+    else
+      echo "Not inside a git repository."
+    fi
+  }
+
+  function convert_gitignore_to_excludes() {
+    local gitignore_file="$(find_git_repo_root)/.gitignore"
+    local exclude_options=()
+
+    if [ -f "${gitignore_file}" ]; then
+      while IFS= read -r line; do
+        # Skip empty lines and comments
+        if [[ -z "${line}" || "${line}" == \#* ]]; then
+          continue
+        fi
+
+        # Remove leading and trailing whitespace
+        line="${line#"${line%%[![:space:]]*}"}"
+        line="${line%"${line##*[![:space:]]}"}"
+
+        # Add line to exclude options
+        exclude_options+=("--exclude=${line}")
+      done < "${gitignore_file}"
+    else
+      echo "No .gitignore file found." >&2
+    fi
+
+    echo "${exclude_options[@]}"
+  }
+
+  grep \
+    -E "ZTODO|ZLOG" \
+    --exclude-dir ".git" \
+    $(convert_gitignore_to_excludes) \
+    -I \
+    -r \
+    ${1:-.}
+}
