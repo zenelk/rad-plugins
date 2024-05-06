@@ -1,5 +1,5 @@
 alias blk='black .'
-alias smp='mypy --strict .'
+alias smp='mypy --exclude build --strict .'
 
 function_redefine pyt
 function pyt() {
