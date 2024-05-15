@@ -2,6 +2,10 @@
 # function_redefine foo
 # function foo() { ... }
 function function_redefine() {
+  function function_exists() {
+    declare -f "$1" > /dev/null
+  }
+
   while (( $# )); do
     if function_exists "$1"; then
       unfunction "$1"
@@ -9,10 +13,6 @@ function function_redefine() {
     autoload -U "$1"
     shift
   done
-}
-
-function function_exists() {
-  declare -f "$1" > /dev/null
 }
 
 # Hook for tying into ZSH process for history adding
