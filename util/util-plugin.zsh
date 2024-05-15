@@ -60,14 +60,8 @@ function sr() {
 
   function validateArguments() {
     case $# in
-      0)
+      0|1)
         return 0
-        ;;
-      1)
-        if [ "${1}" != "${quick_select_root}" ] && ! isInteger "${1}"; then
-          printUnsupportedArgumentError "${1}" 1
-          return 1
-        fi
         ;;
       2)
         if ! isInteger "${1}"; then
@@ -184,12 +178,30 @@ function sr() {
       echoerr -e "${section_header}"
       echoFormattedPromptArray "${array[@]}"
       echo "$(readSelectionInputFromArray "${array[@]}")"
-    elif [ "${quick_select_index}" -lt 1 ] || [ "${quick_select_index}" -gt "${count}" ]; then
+    elif isInteger "${quick_select_index}" && ([ "${quick_select_index}" -lt 1 ] || [ "${quick_select_index}" -gt "${count}" ]); then
       echoerr "Quick select org index '${quick_select_index}' out of bounds '[1, ${count}]'!"
       return 1
     else
       echo "${array["${quick_select_index}"]}"
     fi
+  }
+
+  function attempt_regex_lookup() {
+    local term="${1}"
+    local orgs=($(statOrgs))
+
+    for org in "${orgs[@]}"; do
+      local repos=($(statRepos "${org}"))
+
+      for repo in "${repos[@]}"; do
+        if [[ "${org}/${repo}" =~ "^.*${term}.*$" ]]; then
+          cd "${ZK_CODE_ROOT}/${org}/${repo}"
+          return 0
+        fi
+      done
+    done
+
+    return 1
   }
 
   if ! isRootSet; then
@@ -207,13 +219,24 @@ function sr() {
     return 0
   fi
 
+  if [ $# -eq 1 ] && ! isInteger "${1}"; then
+    if attempt_regex_lookup "$@"; then
+      return 0
+    else
+      echoerr "Could not find a repository matching pattern: \"${1}\"!"
+      return 1
+    fi
+  fi
+
   local quick_select_org_index="$(parseQuickSelectArgument "${1}")"
   if [ -z "${quick_select_org_index}" ]; then
+    echo "Index \"${1}\" not found!"
     return 1
   fi
 
   local quick_select_repo_index="$(parseQuickSelectArgument "${2}")"
   if [ -z "${quick_select_repo_index}" ]; then
+    echo "Index \"${2}\" not found!"
     return 1
   fi
 
