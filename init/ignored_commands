@@ -21,6 +21,7 @@ rm
 mv
 cp
 open
+cat
 
 # Directory Navigation Commands
 cd
@@ -30,3 +31,6 @@ popd
 
 # Redundant Commands
 history
+
+# Temporary Commands
+echo
