@@ -20,6 +20,7 @@ gu
 rm
 mv
 cp
+open
 
 # Directory Navigation Commands
 cd
