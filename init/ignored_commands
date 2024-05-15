@@ -1,0 +1,31 @@
+# Git aliases
+ga
+gb
+gc
+gcan
+gcl
+gco
+gd
+gdc
+gf
+ggg
+gh
+gl
+gp
+gpu
+gs
+gu
+
+# File Commands
+rm
+mv
+cp
+
+# Directory Navigation Commands
+cd
+cdup
+pushd
+popd
+
+# Redundant Commands
+history
