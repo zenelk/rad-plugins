@@ -12,6 +12,7 @@ alias ggg="git log --graph --abbrev-commit --decorate --format=format:'%C(bold b
 %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all"
 alias gh='git rev-parse HEAD'
 alias gl='git pull'
+alias glum='git pull upstream master'
 alias gp='git push'
 alias gpu='git push -u origin `gb`'
 alias gs='git status'
