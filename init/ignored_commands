@@ -21,18 +21,18 @@ gs
 gu
 
 # File Commands
-rm
-mv
-cp
-open
 cat
+cp
 file
+mv
+open
+rm
 
 # Directory Navigation Commands
 cd
 cdup
-pushd
 popd
+pushd
 
 # Redundant Commands
 history
