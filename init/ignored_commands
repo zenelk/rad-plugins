@@ -36,6 +36,7 @@ history
 # Temporary Commands
 echo
 ls
+which
 
 # To be moved to a separate set of plugins when I get the module system working
 wgc
