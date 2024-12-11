@@ -17,6 +17,10 @@ function nuke() {
     fastlane)
       _nuke_fastlane
       ;;
+    python)
+      shift 1
+      _nuke_python "$@"
+      ;;
     *)
       echo "Invalid target: $1"
       return 1
@@ -57,19 +61,19 @@ function _nuke_git() {
 function_redefine _nuke_carthage
 function _nuke_carthage() {
   local clean_all=false
-    # In zsh, you have to not quote this or else you break the numeric parsing.
-    while (( $# )); do
-      case "${1}" in
-        -a|--all)
-          clean_all=true
-          shift 1
-          ;;
-        *)
-          echo "Unrecognized argument: '${1}'!"
-          exit 2
+  # In zsh, you have to not quote this or else you break the numeric parsing.
+  while (( $# )); do
+    case "${1}" in
+      -a|--all)
+        clean_all=true
+        shift 1
         ;;
-      esac
-    done
+      *)
+        echo "Unrecognized argument: '${1}'!"
+        exit 2
+      ;;
+    esac
+  done
 
   if [ "${clean_all}" = true ]; then
     rm -rf ~/Library/Caches/org.carthage.CarthageKit
@@ -81,4 +85,52 @@ function _nuke_carthage() {
 function_redefine _nuke_fastlane
 function _nuke_fastlane() {
   rm -rf fastlane/output
+}
+
+function_redefine _nuke_python
+function _nuke_python() {
+  if [ -z "${ZK_VENV_ROOT}" ]; then
+    echo "ZK_VENV_ROOT is not set! Refusing to nuke an undefined target!"
+    return 1
+  fi
+
+  local clean_all=false
+  # In zsh, you have to not quote this or else you break the numeric parsing.
+  while (( $# )); do
+    case "${1}" in
+      -a|--all)
+        clean_all=true
+        shift 1
+        ;;
+      *)
+        echo "Unrecognized argument: '${1}'!"
+        return 2
+      ;;
+    esac
+  done
+
+  if ! command -v deactivate; then
+    echo "No active virtual environment to deactivate."
+  else
+    echo "Deactivating active virtual environment..."
+    deactivate
+  fi
+
+  echo "Removing all virtual environments in '${ZK_VENV_ROOT}'..."
+  rm -rf "${ZK_VENV_ROOT}"
+
+  if [ "${clean_all}" = true ]; then
+    echo "All argument was specified. Are you sure you want to end the world? [y/N]"
+    read -r response
+    if [ "${response}" != "y" ]; then
+      echo "Good call. No ending the world today."
+      return 1
+    fi
+
+    all_python_versions=$(pyenv versions --bare)
+    echo "Removing all Python versions and their virtual environments..."
+    echo "${all_python_versions}" | while read -r python_version; do
+      pyenv uninstall -f "${python_version}"
+    done
+  fi
 }
