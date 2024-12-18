@@ -245,31 +245,34 @@ function pyv() {
 
   if [ "$do_black" = true ]; then
     echo "Running Black with args '$@'..."
-    black "$@"
+    python3 -m black $@
     if [ $? -ne 0 ]; then
-      echo -e "blk command failed!\n" >&2
+      echo -e "\e[31mBlack failed!\e[0m\n" >&2
     else
-      echo -e 'Black succeeded!\n'
+      echo -e "\e[35mBlack succeeded!\e[0m\n"
     fi
   fi
 
   if [ "$do_mypy" = true ]; then
     echo "Running Mypy with args '$@'..."
-    mypy --exclude build --strict "$@"
+    python3 -m mypy --exclude build --strict $@
     if [ $? -ne 0 ]; then
-      echo -e "smp command failed!\n" >&2
+      echo -e "\e[31mMypy failed!\e[0m\n" >&2
     else
-      echo -e 'Mypy succeeded!\n'
+      echo -e "\e[35mMypy succeeded!\e[0m\n"
     fi
-  fi
+    fi
 
-  if [ "$do_pytest" = true ]; then
+    if [ "$do_pytest" = true ]; then
     echo "Running Pytest with args '$@'..."
-    pytest "$@" --cov-report term-missing --cov=src --tb=auto -l -rPx
+    if [ -d "$1/src" ]; then
+      src_cov_term="--cov=src"
+    fi
+    python3 -m pytest $@ --cov-report term-missing $src_cov_term --tb=auto -l -rPx
     if [ $? -ne 0 ]; then
-      echo -e "pyt command failed!\n" >&2
+      echo -e "\e[31mPytest failed!\e[0m\n" >&2
     else
-      echo -e 'Pytest succeeded!\n'
+      echo -e "\e[35mPytest succeeded!\e[0m\n"
     fi
   fi
 }
