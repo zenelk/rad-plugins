@@ -1,5 +1,6 @@
 alias ga='git add -A'
 alias gb='git rev-parse --abbrev-ref HEAD'
+alias gbc='gb | pbcopy'
 alias gc='git commit'
 alias gcan='git commit --amend --no-edit'
 alias gcl='git clone'
