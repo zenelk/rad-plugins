@@ -202,13 +202,19 @@ function pyv() {
   do_black=false
   do_mypy=false
   do_pytest=false
+  do_isort=false
   should_shift=false
 
-  while getopts "bmp" opt; do
+  while getopts "bimp" opt; do
     case $opt in
       b)
         echo "Option -b: $OPTARG"
         do_black=true
+        should_shift=true
+        ;;
+      i)
+        echo "Option -i: $OPTARG"
+        do_isort=true
         should_shift=true
         ;;
       m)
@@ -237,10 +243,11 @@ function pyv() {
     return 1
   fi
 
-  if [ "$do_black" = false ] && [ "$do_mypy" = false ] && [ "$do_pytest" = false ]; then
+  if [ "$do_black" = false ] && [ "$do_mypy" = false ] && [ "$do_pytest" = false ] && [ "$do_isort" = false ]; then
     do_black=true
     do_mypy=true
     do_pytest=true
+    do_isort=true
   fi
 
   if [ "$do_black" = true ]; then
@@ -250,6 +257,16 @@ function pyv() {
       echo -e "\e[31mBlack failed!\e[0m\n" >&2
     else
       echo -e "\e[35mBlack succeeded!\e[0m\n"
+    fi
+  fi
+
+  if [ "$do_isort" = true ]; then
+    echo "Running Isort with args '$@'..."
+    python3 -m isort $@
+    if [ $? -ne 0 ]; then
+      echo -e "\e[31mIsort failed!\e[0m\n" >&2
+    else
+      echo -e "\e[35mIsort succeeded!\e[0m\n"
     fi
   fi
 
